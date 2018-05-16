@@ -15,6 +15,7 @@ const {
 } = require('actions-on-google');
 const functions = require('firebase-functions');
 const admin = require("firebase-admin");
+// Dialogflow
 
 
 const serviceAccount = require("./config/firebaseKey.json");
@@ -48,7 +49,26 @@ const intentSuggestions = [
 
 const app = dialogflow({
   debug: true
+    // clientId: "1063110295002-fvrho9bj92nhovma5jb5e8jt7st2giu3.apps.googleusercontent.com"
 });
+
+// app.intent('Default Welcome Intent', conv => {
+//   conv.ask(new SignIn('To get your account details'))
+// })
+
+// app.intent('Default Welcome Intent', (conv) => {
+//   conv.ask('V50')
+// })
+
+// // Create a Dialogflow intent with the `actions_intent_SIGN_IN` event
+// app.intent('Get Signin', (conv, params, signin) => {
+//   if (signin.status === 'OK') {
+//     const payload = conv.user.profile.payload
+//     conv.ask(`I got your account details, ${payload.name}. What do you want to do next?`)
+//   } else {
+//     conv.ask(`I won't be able to save your data, but what do you want to do next?`)
+//   }
+// })
 
 // Start tell-me intent
 app.intent('tell-me', (conv, { exerciseTitle }) => {
@@ -89,6 +109,7 @@ app.intent('tell-me', (conv, { exerciseTitle }) => {
   } else {
     console.log(`User was blank`);
   }
+
 });
 // End tell-me intent
 
@@ -229,7 +250,6 @@ app.intent('media status', (conv) => {
   conv.ask(response);
 });
 
-
 // React to list selection
 app.intent('item selected', (conv, params, option) => {
   let response = 'You did not select any item from the list';
@@ -240,10 +260,5 @@ app.intent('item selected', (conv, params, option) => {
   }
   conv.ask(response);
 });
-
-// app.intent('Default Welcome Intent', (conv) => {
-//   conv.ask('V46')
-// })
-
 
 exports.serenefunctions = functions.https.onRequest(app);
