@@ -56,9 +56,9 @@ const app = dialogflow({
 //   conv.ask(new SignIn('To get your account details'))
 // })
 
-// app.intent('Default Welcome Intent', (conv) => {
-//   conv.ask('V50')
-// })
+app.intent('Default Welcome Intent', (conv) => {
+  conv.ask('V51')
+})
 
 // // Create a Dialogflow intent with the `actions_intent_SIGN_IN` event
 // app.intent('Get Signin', (conv, params, signin) => {
@@ -97,7 +97,7 @@ app.intent('tell-me', (conv, { exerciseTitle }) => {
               alt: exerciseTit
             })
           }));
-          conv.ask(new Suggestions([`Show me ${exerciseTitle}`, `Finished`]));
+          conv.ask(new Suggestions([`Show`, `Favorite`, `Finish`]));
           return
         }
         return
@@ -135,16 +135,16 @@ app.intent('show-me', (conv, { exerciseTitle }) => {
           conv.ask(new BasicCard({
             text: `${exerciseShort}`,
             title: `${exerciseTit}`,
-            // buttons: new Button({
-            //   title: `View on Youtube`,
-            //   url: `${exercisevideoURL}`
-            // }),
             image: new Image({
               url: exerciseCardimgURL,
               alt: exerciseTitle
             })
           }));
-          conv.ask(new Suggestions([`Tell me ${exerciseTitle}`, `Finished`]));
+          conv.ask(new SimpleResponse({
+            speech: 'Do you want to favorite this, hear the audio version or finish',
+            text: '',
+          }));
+          conv.ask(new Suggestions([`Audio`, `Favorite`, `Finish`]));
           return
         }
         return
