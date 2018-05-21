@@ -27,36 +27,31 @@ admin.initializeApp({
 });
 
 const dbstore = admin.firestore();
+let exercise = 'conv.user.storage.exercise'
 
 const bot = dialogflow({
   debug: true
 });
 
 bot.intent('Default Welcome Intent', (conv) => {
-  conv.ask('V70')
+  conv.ask('V73')
 })
 
 // Start audio intent
 bot.intent('audio', (conv, { exerciseTitle }) => {
-  // if (!conv.data.exerciseCurrent.exist) {
-  //   conv.user.storage = {};
-  //   const exercise = conv.data.exerciseCurrent;
-  //   console.log(`currently pre saved exercise is ${exercise}`);
-  // } else {
-  //   const exercise = exerciseTitle;
-  //   console.log(`currently new exercise is ${exercise}`);
-  // }
-  if (!exerciseTitle.exists) {
-    return dbstore.collection('exercises').doc(exerciseTitle).get()
+  if (exercise !== exerciseTitle) {
+    exercise = exerciseTitle;
+    console.log(`exercise storage variable is ${exercise}`);
+    return dbstore.collection('exercises').doc(exercise).get()
       .then(doc => {
         if (!doc.exists) {
-          console.log('No such exercise!');
+          console.log('No such exercise in the database!');
         } else {
           const exerciseShort = doc.data().short;
           const exerciseTit = doc.data().title;
           const exerciseAudioURL = doc.data().audio;
           const exerciseCardimgURL = doc.data().img;
-          console.log(`${exerciseTitle} is exerciseTtile`);
+          console.log(`${exercise} is exercise`);
           conv.ask(new SimpleResponse({
             speech: `Here you go!`,
             text: `Here you go!`
@@ -90,7 +85,7 @@ bot.intent('show', (conv, { exerciseTitle }) => {
     return dbstore.collection('exercises').doc(exerciseTitle).get()
       .then(doc => {
         if (!doc.exists) {
-          console.log('No such exercise!');
+          console.log('No such exercise in the database!');
         } else {
           const exerciseShort = doc.data().short;
           const exerciseTit = doc.data().title;
