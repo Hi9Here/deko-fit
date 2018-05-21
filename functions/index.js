@@ -34,13 +34,13 @@ const bot = dialogflow({
 });
 
 bot.intent('Default Welcome Intent', (conv) => {
-  conv.ask('V73')
+  conv.ask('V75')
 })
 
 // Start audio intent
 bot.intent('audio', (conv, { exerciseTitle }) => {
   if (exercise !== exerciseTitle) {
-    exercise = exerciseTitle;
+    let exercise = exerciseTitle;
     console.log(`exercise storage variable is ${exercise}`);
     return dbstore.collection('exercises').doc(exercise).get()
       .then(doc => {
@@ -80,9 +80,9 @@ bot.intent('audio', (conv, { exerciseTitle }) => {
 
 // Start show intent
 bot.intent('show', (conv, { exerciseTitle }) => {
-
-  if (!exerciseTitle.exists) {
-    return dbstore.collection('exercises').doc(exerciseTitle).get()
+  if (exercise !== exerciseTitle) {
+    let exercise = exerciseTitle;
+    return dbstore.collection('exercises').doc(exercise).get()
       .then(doc => {
         if (!doc.exists) {
           console.log('No such exercise in the database!');
@@ -91,8 +91,6 @@ bot.intent('show', (conv, { exerciseTitle }) => {
           const exerciseTit = doc.data().title;
           const exerciseAudioURL = doc.data().audio;
           const exerciseCardimgURL = doc.data().img;
-          // const exercisevideoURL = doc.data().video;
-          console.log(exerciseTitle);
           conv.ask(new SimpleResponse({
             speech: `Here you go!`,
             text: `Here you go!`
@@ -102,7 +100,7 @@ bot.intent('show', (conv, { exerciseTitle }) => {
             title: `${exerciseTit}`,
             image: new Image({
               url: exerciseCardimgURL,
-              alt: exerciseTitle
+              alt: exercise
             })
           }));
           conv.ask(new SimpleResponse({
