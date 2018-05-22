@@ -16,9 +16,8 @@ const {
 } = require('actions-on-google');
 const functions = require('firebase-functions');
 const admin = require("firebase-admin");
+
 // Dialogflow
-
-
 const serviceAccount = require("./config/firebaseKey.json");
 
 admin.initializeApp({
