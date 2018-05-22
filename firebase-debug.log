@@ -1,0 +1,124 @@
+[debug] [2018-05-22T09:10:32.966Z] ----------------------------------------------------------------------
+[debug] [2018-05-22T09:10:32.968Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only functions
+[debug] [2018-05-22T09:10:32.969Z] CLI Version:   3.18.5
+[debug] [2018-05-22T09:10:32.969Z] Platform:      darwin
+[debug] [2018-05-22T09:10:32.969Z] Node Version:  v9.10.1
+[debug] [2018-05-22T09:10:32.969Z] Time:          Tue May 22 2018 10:10:32 GMT+0100 (BST)
+[debug] [2018-05-22T09:10:32.969Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-05-22T09:10:32.980Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-05-22T09:10:32.980Z] > authorizing via signed-in user
+[debug] [2018-05-22T09:10:32.981Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-05-22T09:10:32.982Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ { refresh_token: '1/syTnAY5f4IY3mu-UTrDtsUpn9ZGoqVsNtC343n-DqSg',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Tue May 22 2018 10:10:32 GMT+0100 (BST)
+[debug] [2018-05-22T09:10:33.231Z] <<< HTTP RESPONSE 200
+[debug] [2018-05-22T09:10:33.247Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/serene-bot  
+  
+ Tue May 22 2018 10:10:33 GMT+0100 (BST)
+[debug] [2018-05-22T09:10:33.892Z] <<< HTTP RESPONSE 200
+[debug] [2018-05-22T09:10:33.893Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/serene-bot/tokens  
+  
+ Tue May 22 2018 10:10:33 GMT+0100 (BST)
+[debug] [2018-05-22T09:10:34.520Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'serene-bot'...
+[info] 
+[info] i  deploying functions
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] ✔  functions: Finished running predeploy script.
+[debug] [2018-05-22T09:10:38.027Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "serve": "firebase serve --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "dependencies": {
+    "actions-on-google": "^2.0.1",
+    "firebase-admin": "^5.12.0",
+    "firebase-functions": "^1.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.12.0",
+    "eslint-plugin-promise": "^3.7.0"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[debug] [2018-05-22T09:10:38.028Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/cloudfunctions.googleapis.com/projectSettings/serene-bot?view=CONSUMER_VIEW  
+  
+ Tue May 22 2018 10:10:38 GMT+0100 (BST)
+[debug] [2018-05-22T09:10:38.028Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/runtimeconfig.googleapis.com/projectSettings/serene-bot?view=CONSUMER_VIEW  
+  
+ Tue May 22 2018 10:10:38 GMT+0100 (BST)
+[debug] [2018-05-22T09:10:40.050Z] <<< HTTP RESPONSE 200
+[debug] [2018-05-22T09:10:40.079Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: all necessary APIs are enabled
+[debug] [2018-05-22T09:10:40.081Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/serene-bot  
+  
+ Tue May 22 2018 10:10:40 GMT+0100 (BST)
+[debug] [2018-05-22T09:10:41.729Z] <<< HTTP RESPONSE 200
+[debug] [2018-05-22T09:10:41.730Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/1063110295002:getServerAppConfig  
+  
+ Tue May 22 2018 10:10:41 GMT+0100 (BST)
+[debug] [2018-05-22T09:10:43.161Z] <<< HTTP RESPONSE 200
+[info] i  functions: preparing functions directory for uploading...
+[debug] [2018-05-22T09:10:43.162Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/serene-bot/configs  
+  
+ Tue May 22 2018 10:10:43 GMT+0100 (BST)
+[debug] [2018-05-22T09:10:44.389Z] <<< HTTP RESPONSE 200
+[info] i  functions: packaged functions (62.56 KB) for uploading
+[debug] [2018-05-22T09:10:45.120Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/serene-bot/locations/us-central1/functions:generateUploadUrl  
+  
+ Tue May 22 2018 10:10:45 GMT+0100 (BST)
+[debug] [2018-05-22T09:10:45.472Z] <<< HTTP RESPONSE 200
+[debug] [2018-05-22T09:10:45.472Z] >>> HTTP REQUEST PUT https://storage.googleapis.com/gcf-upload-us-central1-44ecc08d-c8e0-43ce-b25f-2dc004bc982f/0cd71803-183f-4586-85ab-f223b71d0af0.zip?GoogleAccessId=1063110295002@cloudservices.gserviceaccount.com&Expires=1526982045&Signature=BxBHSZAY8SZz5C9423bCIl4iGW60JZw1s0W4mrL3DFq8ea5FsE4hlqr4oAjiUryuzHQUCa8ChSqR095ebt7JrgyRFZiR%2FJHrrc%2BjNESxDOOfsXBhE4fnB1Ohfoowur6ctRt98zuvJ7brM0Z5AUfFx0WT2HCVbh4BfoEDrDN6JrhdHLVlkQR5faXblsmXyKBBrcyg1otbRy06FoqxHtScoj0z0TaHtjasiQPiRw4McpPUv%2B8Rdu2N0VsnkPPhLFrslqVLCcPGqlM9XHLQkdutKow1WAPBOZUya%2BC8f52OVNl2qZEX6e6b9Rb%2BeBzf8D%2FYGWDMkSWd7m5g1KXpl%2FGTug%3D%3D  
+ ReadStream {
+  _readableState: 
+   ReadableState {
+     objectMode: false,
+     highWaterMark: 65536,
+     buffer: BufferList { head: [Object], tail: [Object], length: 1 },
+     length: 64065,
+     pipes: null,
+     pipesCount: 0,
+     flowing: null,
+     ended: true,
+     endEmitted: false,
+     reading: false,
+     sync: false,
+     needReadable: false,
+     emittedReadable: true,
+     readableListening: false,
+     resumeScheduled: false,
+     destroyed: false,
+     defaultEncoding: 'utf8',
+     awaitDrain: 0,
+     readingMore: false,
+     decoder: null,
+     encoding: null },
+  readable: true,
+  domain: null,
+  _events: { end: [Function] },
+  _eventsCount: 1,
+  _maxListeners: undefined,
+  path: '/var/folders/0h/9jj2btw11g5cy3v96100yqj80000gn/T/firebase-functions-1986OMBt4z92vzmN.zip',
+  fd: 19,
+  flags: 'r',
+  mode: 438,
+  start: undefined,
+  end: Infinity,
+  autoClose: true,
+  pos: undefined,
+  bytesRead: 64065,
+  closed: false } 
+ Tue May 22 2018 10:10:45 GMT+0100 (BST)

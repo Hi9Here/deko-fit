@@ -33,7 +33,7 @@ const bot = dialogflow({
 });
 
 bot.intent('Default Welcome Intent', (conv) => {
-  conv.ask('V75')
+  conv.ask('V76')
 })
 
 // Start audio intent
@@ -42,14 +42,14 @@ bot.intent('audio', (conv, { exerciseTitle }) => {
     let exercise = exerciseTitle;
     console.log(`exercise storage variable is ${exercise}`);
     return dbstore.collection('exercises').doc(exercise).get()
-      .then(doc => {
-        if (!doc.exists) {
+      .then(audioDoc => {
+        if (!audioDoc.exists) {
           console.log('No such exercise in the database!');
         } else {
-          const exerciseShort = doc.data().short;
-          const exerciseTit = doc.data().title;
-          const exerciseAudioURL = doc.data().audio;
-          const exerciseCardimgURL = doc.data().img;
+          const exerciseShort = audioDoc.data().short;
+          const exerciseTit = audioDoc.data().title;
+          const exerciseAudioURL = audioDoc.data().audio;
+          const exerciseCardimgURL = audioDoc.data().img;
           console.log(`${exercise} is exercise`);
           conv.ask(new SimpleResponse({
             speech: `Here you go!`,
@@ -72,8 +72,9 @@ bot.intent('audio', (conv, { exerciseTitle }) => {
       .catch(err => {
         console.log('exerciseTitle does not exist error', err);
       });
+  } else {
+    console.log(`something weird happened in audio`);
   }
-
 });
 // End audio intent
 
@@ -82,14 +83,14 @@ bot.intent('show', (conv, { exerciseTitle }) => {
   if (exercise !== exerciseTitle) {
     let exercise = exerciseTitle;
     return dbstore.collection('exercises').doc(exercise).get()
-      .then(doc => {
-        if (!doc.exists) {
+      .then(showDoc => {
+        if (!showDoc.exists) {
           console.log('No such exercise in the database!');
         } else {
-          const exerciseShort = doc.data().short;
-          const exerciseTit = doc.data().title;
-          const exerciseAudioURL = doc.data().audio;
-          const exerciseCardimgURL = doc.data().img;
+          const exerciseShort = showDoc.data().short;
+          const exerciseTit = showDoc.data().title;
+          const exerciseAudioURL = showDoc.data().audio;
+          const exerciseCardimgURL = showDoc.data().img;
           conv.ask(new SimpleResponse({
             speech: `Here you go!`,
             text: `Here you go!`
@@ -116,7 +117,7 @@ bot.intent('show', (conv, { exerciseTitle }) => {
       });
 
   } else {
-    console.log(`User was blank`);
+    console.log(`something weird happened in show`);
   }
 });
 // End show intent
@@ -131,4 +132,4 @@ bot.intent('media status', (conv) => {
   conv.ask(response);
 });
 
-exports.serenefunctions = functions.https.onRequest(bot);
+exports.dekofit = functions.https.onRequest(bot);
