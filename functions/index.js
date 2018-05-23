@@ -33,7 +33,7 @@ const bot = dialogflow({
 });
 
 bot.intent('Default Welcome Intent', (conv) => {
-  conv.ask('V76')
+  conv.ask('V83')
 })
 
 // Start audio intent
@@ -83,14 +83,14 @@ bot.intent('show', (conv, { exerciseTitle }) => {
   if (exercise !== exerciseTitle) {
     let exercise = exerciseTitle;
     return dbstore.collection('exercises').doc(exercise).get()
-      .then(showDoc => {
-        if (!showDoc.exists) {
+      .then(doc => {
+        if (!doc.exists) {
           console.log('No such exercise in the database!');
         } else {
-          const exerciseShort = showDoc.data().short;
-          const exerciseTit = showDoc.data().title;
-          const exerciseAudioURL = showDoc.data().audio;
-          const exerciseCardimgURL = showDoc.data().img;
+          const exerciseShort = doc.data().short;
+          const exerciseTit = doc.data().title;
+          const exerciseAudioURL = doc.data().audio;
+          const exerciseCardimgURL = doc.data().img;
           conv.ask(new SimpleResponse({
             speech: `Here you go!`,
             text: `Here you go!`
@@ -122,6 +122,69 @@ bot.intent('show', (conv, { exerciseTitle }) => {
 });
 // End show intent
 
+// Start profile measurements
+bot.intent('profile', (conv, { Userweight, Userheight }) => {
+  if (!Userweight.exist || Userheight.exist) {
+    return dbstore.collection('profile').doc('profileID').collection('details').doc('measurements').set({
+        weight: Userweight,
+        height: Userheight
+      })
+      .then(function() {
+        console.log("Document successfully written!");
+        return
+      })
+      .catch(function(error) {
+        console.error("Error writing document: ", error);
+        return
+      });
+  } else {
+    console.log(`something weird happened in show`);
+  }
+});
+// End profile measurements
+
+// show profile measurements
+bot.intent('showprofile', (conv) => {
+  return dbstore.collection('profile').doc('profileID').collection('details').doc('measurements').get()
+    .then(doc => {
+      if (!doc.exists) {
+        console.log('No such measure ments exist!');
+        conv.ask(new SimpleResponse({
+          speech: 'No such measurements exist?',
+          text: 'No such measuremets exist?',
+        }));
+      } else {
+        const heightVal = doc.data().height.amount;
+        const weightVal = doc.data().weight.amount;
+        const weightUnit = doc.data().weight.unit;
+        const heightUnit = doc.data().height.unit;
+        conv.ask(new SimpleResponse({
+          speech: `Here you go!`,
+          text: `Here you go!`
+        }));
+        conv.ask(new BasicCard({
+          text: `Height is ${heightVal} ${heightUnit} and Weight is ${weightVal} ${weightUnit}`,
+          title: `Terry Crews`,
+          image: new Image({
+            url: `https://storage.googleapis.com/serene-bot.appspot.com/images/terry-crews.jpg`,
+            alt: `profile`
+          })
+        }));
+        conv.ask(new SimpleResponse({
+          speech: 'Here is your information. Would you like to change weight or height?',
+          text: 'Here is your information. Would you like to change weight or height?',
+        }));
+        conv.ask(new Suggestions([`Change Weight`, `Change Height`]));
+        return
+      }
+      return
+    })
+    .catch(err => {
+      console.log('Error getting profile card', err);
+    });
+});
+// End profile measurements
+
 
 bot.intent('media status', (conv) => {
   const mediaStatus = conv.arguments.get('MEDIA_STATUS');
@@ -132,4 +195,4 @@ bot.intent('media status', (conv) => {
   conv.ask(response);
 });
 
-exports.dekofit = functions.https.onRequest(bot);
+exports.serenefunctions = functions.https.onRequest(bot);
