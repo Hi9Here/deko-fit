@@ -65,9 +65,32 @@ bot.middleware(async(conv) => {
       console.info(`*  middleware  * conv.data.uid. If user not found. Create a new Firebase auth user from the Google Profile ${JSON.stringify(conv.data.uid, null,2)}`);
     }
   }
+  // Finding out if there is already a profile
   if (conv.data.uid) {
     try {
-      db.collection('user').doc(conv.data.uid).set({
+      const profile = await db.collection('entities').where(`uid`, `==`, conv.data.uid).get();
+      if (profile.empty) {
+        console.warn(`*  Middleware  * No matching Profile but a UID so Set Profile `);
+        try {
+          return db.collection('user').doc(conv.data.uid).set({
+            Email: payload.email,
+            LastName: payload.family_name,
+            FirstName: payload.given_name,
+            FullName: payload.name,
+            ProfileImage: payload.picture,
+            ProfileCreated: payload.iat,
+            ProfileExpires: payload.exp,
+            GoogleID: payload.sub
+          });
+        } catch (error) {
+          throw console.error(`*  middleware  * error trying to Set payload data ${error}`);
+        }
+      }
+    } catch (error) {
+      console.error(`*  Diary  * Error getting diary under ${error}`);
+    }
+    try {
+      return db.collection('user').doc(conv.data.uid).update({
         Email: payload.email,
         LastName: payload.family_name,
         FirstName: payload.given_name,
@@ -77,12 +100,12 @@ bot.middleware(async(conv) => {
         ProfileExpires: payload.exp,
         GoogleID: payload.sub
       });
-      conv.data.name = payload.FullName
     } catch (error) {
-      throw console.error(`*  middleware  * error trying to save payload data ${error}`);
+      throw console.error(`*  middleware  * error trying to Update payload data ${error}`);
     }
-    console.info(`*  middleware  * User Payload Saved ${JSON.stringify(conv.user.profile.payload, null, 2)}`);
   }
+  console.info(`*  middleware  * User Payload Saved ${JSON.stringify(conv.user.profile.payload, null, 2)}`);
+
 });
 // End of Middleware
 
@@ -93,4 +116,4 @@ bot.intent("Start Sign-in", conv => {
 });
 // End Sign In
 
-exports.dekofitfuns = functions.https.onRequest(bot);
+exports.dekofitfunc = functions.https.onRequest(bot);
