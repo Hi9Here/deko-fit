@@ -1,5 +1,8 @@
 'use strict';
 
+const functions = require('firebase-functions');
+const admin = require("firebase-admin");
+const moment = require('moment');
 const {
   dialogflow,
   Image,
@@ -11,218 +14,83 @@ const {
   Carousel,
   SignIn
 } = require('actions-on-google');
-const functions = require('firebase-functions');
-const admin = require("firebase-admin");
-const cors = require("cors")
 
-// Dialogflow
-const serviceAccount = require("./config/firebaseKey.json");
+admin.initializeApp();
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://serene-bot.firebaseio.com"
-});
+// Setup some variables for the paths to Firestore Database
+const auth = admin.auth();
+const db = admin.firestore();
+let FieldValue = require('firebase-admin').firestore.FieldValue;
 
-const dbstore = admin.firestore();
-let exercise = 'conv.user.storage.exercise'
+// Just something to stop annoying error messages, ignore
+db.settings({ timestampsInSnapshots: true });
 
+// Version and logging
+const version = 0.1;
+
+const datetime = Date.now();
+const when = moment(datetime).format('MMMM Do YYYY, h:mm:ss a');
+console.info(`*  Deployed  * V${version} at ${when}`)
+
+// Create a Firebase Environmental Variable yarn envset
+// firebase functions:config:set fireconfig.id="[CLIENTID]"
+// firebase functions:config:get to find out what they are
 const bot = dialogflow({
-  debug: true
+  clientId: functions.config().fireconfig.id,
+  debug: true,
 });
 
-let version = 0.9
-
-bot.intent('Default Welcome Intent', (conv) => {
-  conv.ask(`My name is Serene and I am here to help you get fitter and stronger. Ask me how to do an particular Exercise or change your Weight or Show Profile`)
-  conv.ask(new Suggestions([`Exercise`, `Show Profile`, `Weight`]));
-})
-
-// Start audio intent
-bot.intent('audio', (conv, { exerciseTitle }) => {
-  if (exercise !== exerciseTitle) {
-    let exercise = exerciseTitle;
-    console.log(`exercise storage variable is ${exercise}`);
-    return dbstore.collection('exercises').doc(exercise).get()
-      .then(audioDoc => {
-        if (!audioDoc.exists) {
-          console.log('No such exercise in the database!');
-        } else {
-          const exerciseShort = audioDoc.data().short;
-          const exerciseTit = audioDoc.data().title;
-          const exerciseAudioURL = audioDoc.data().audio;
-          const exerciseCardimgURL = audioDoc.data().img;
-          console.log(`${exercise} is exercise`);
-          conv.ask(new SimpleResponse({
-            speech: `Here you go!`,
-            text: `Here you go!`
-          }));
-          conv.ask(new MediaObject({
-            name: exerciseTit,
-            url: exerciseAudioURL,
-            description: `Enjoy ${exerciseShort}`,
-            icon: new Image({
-              url: exerciseCardimgURL,
-              alt: exerciseTit
-            })
-          }));
-          conv.ask(new SimpleResponse({
-            speech: 'Do you want another exercise or update weight?',
-            text: 'Do you want another exercise, update weight or finish?',
-          }));
-          conv.ask(new Suggestions([`Another Exercise`, `Update Weight`, `Finish`]));
-          return
-        }
-        conv.ask(new Suggestions([`Another Exercise`, `Update Weight`, `Finish`]));
-        return
-      })
-      .catch(err => {
-        console.log('exerciseTitle does not exist error', err);
-      });
-  } else {
-    console.log(`something weird happened in audio`);
-  }
-});
-// End audio intent
-
-// Start show intent
-bot.intent('show', (conv, { exerciseTitle }) => {
-  if (exercise !== exerciseTitle) {
-    let exercise = exerciseTitle;
-    return dbstore.collection('exercises').doc(exercise).get()
-      .then(doc => {
-        if (!doc.exists) {
-          console.log('No such exercise in the database!');
-        } else {
-          const exerciseShort = doc.data().short;
-          const exerciseTit = doc.data().title;
-          const exerciseAudioURL = doc.data().audio;
-          const exerciseCardimgURL = doc.data().img;
-          conv.ask(new SimpleResponse({
-            speech: `Here you go!`,
-            text: `Here you go!`
-          }));
-          conv.ask(new BasicCard({
-            text: `${exerciseShort}`,
-            title: `${exerciseTit}`,
-            image: new Image({
-              url: exerciseCardimgURL,
-              alt: exercise
-            })
-          }));
-          conv.ask(new SimpleResponse({
-            speech: 'Do you want another exercise?',
-            text: 'Do you want another exercise or finish?',
-          }));
-          conv.ask(new Suggestions([`Another Exercise`, `Update Weight`, `Finish`]));
-          return
-        }
-        return
-      })
-      .catch(err => {
-        console.log('Error getting card', err);
-      });
-
-  } else {
-    console.log(`something weird happened in show`);
-  }
-});
-// End show intent
-
-// Start profile measurements
-bot.intent('profile', (conv, { Userweight, Userheight }) => {
-  if (!Userweight.exist || Userheight.exist) {
-    return dbstore.collection('profile').doc('profileID').collection('details').doc('measurements').set({
-        weight: Userweight,
-        height: Userheight
-      }, { merge: true })
-      .then(function() {
-        console.log("Document successfully written!");
-        return
-      })
-      .catch(function(error) {
-        console.error("Error writing document: ", error);
-        return
-      });
-  } else {
-    console.log(`something weird happened in profile`);
-  }
-});
-// End profile measurements
-// Start profile measurements
-bot.intent('weight', (conv, { weight }) => {
-  if (!weight.exist) {
-    return dbstore.collection('profile').doc('profileID').collection('details').doc('measurements').set({
-        weight: weight,
-      }, { merge: true })
-      .then(function() {
-        console.log("Document successfully written!");
-        conv.ask(new SimpleResponse({
-          speech: 'Thank You. Do you want me to show profile or another exercise?',
-          text: 'Thank you. Do ysou want me to show profile or another exercise?',
-        }));
-        conv.ask(new Suggestions([`Show Profile`, `Exercise`]));
-        return
-      })
-      .catch(function(error) {
-        console.error("Error writing document: ", error);
-        return
-      });
-  } else {
-    console.log(`something weird happened in wieght`);
-  }
-});
-// End profile measurements
-
-// show profile measurements
-bot.intent('showprofile', (conv) => {
-  return dbstore.collection('profile').doc('profileID').collection('details').doc('measurements').get()
-    .then(doc => {
-      if (!doc.exists) {
-        console.log('No such measure ments exist!');
-        conv.ask(new SimpleResponse({
-          speech: 'No such measurements exist?',
-          text: 'No such measuremets exist?',
-        }));
-      } else {
-        const heightVal = doc.data().height.amount;
-        const weightVal = doc.data().weight.amount;
-        const weightUnit = doc.data().weight.unit;
-        const heightUnit = doc.data().height.unit;
-        conv.ask(new SimpleResponse({
-          speech: `Here you go!`,
-          text: `Here you go!`
-        }));
-        conv.ask(new BasicCard({
-          text: `Height is ${heightVal} ${heightUnit} and Weight is ${weightVal} ${weightUnit}`,
-          title: `Wo King`,
-          image: new Image({
-            url: `https://lh5.googleusercontent.com/-7idzbwYDIoQ/AAAAAAAAAAI/AAAAAAAAAe0/P_Bc_UFQf9E/s96-c/photo.jpg`,
-            alt: `Wo King`
-          })
-        }));
-        conv.ask(new SimpleResponse({
-          speech: 'Here is your information. Would you like to change weight or height?',
-          text: 'Here is your information. Would you like to change weight or height?',
-        }));
-        conv.ask(new Suggestions([`Change Weight`, `Change Height`, `Show Exercise`]));
-        return
+//Middleware get's fired everytime before intents
+bot.middleware(async(conv) => {
+  const { payload } = conv.user.profile
+    // Get the email value from the Conversation User
+  const { email } = conv.user;
+  console.info(`*  middleware  * VERSION ${version}`);
+  console.info(`*  middleware  * conv.user ${JSON.stringify(conv.user, null, 2)}`);
+  console.info(`*  middleware  * conv.data.uid ${JSON.stringify(conv.data.uid, null, 2)}`);
+  console.info(`*  middleware  * email const ${JSON.stringify(email, null, 2)}`);
+  console.info(`*  middleware  * payload const ${JSON.stringify(conv.user.profile.payload, null, 2)}`);
+  if (!conv.data.uid && email) {
+    try {
+      // If there is no uid then grab the UID from the Firebase Email Address
+      conv.data.uid = (await auth.getUserByEmail(email)).uid;
+      console.info(`*  middleware  * conv.data.uid. If no uid then use UID from Firebase ${JSON.stringify(conv.data.uid, null, 2)}`);
+    } catch (error) {
+      if (error.code !== 'auth/user-not-found') {
+        throw console.error(`*  middleware  * error is ${error}`);
       }
-      return
-    })
-    .catch(err => {
-      console.log('Error getting profile card', err);
-    });
-});
-// End profile measurements
-
-
-bot.intent('media status', (conv) => {
-  const mediaStatus = conv.arguments.get('MEDIA_STATUS');
-  let response = 'Unknown media status received.';
-  if (mediaStatus && mediaStatus.status === 'FINISHED') {
-    response = 'I hope that helped please feel free to ask about any other exercise or piece of equipment!';
+      // If the user is not found, create a new Firebase auth user
+      // using the email obtained from the Google Assistant
+      conv.data.uid = (await auth.createUser({ email })).uid;
+      console.info(`*  middleware  * conv.data.uid. If user not found. Create a new Firebase auth user from the Google Profile ${JSON.stringify(conv.data.uid, null,2)}`);
+    }
   }
-  conv.ask(response);
+  if (conv.data.uid) {
+    try {
+      db.collection('user').doc(conv.data.uid).set({
+        Email: payload.email,
+        LastName: payload.family_name,
+        FirstName: payload.given_name,
+        FullName: payload.name,
+        ProfileImage: payload.picture,
+        ProfileCreated: payload.iat,
+        ProfileExpires: payload.exp,
+        GoogleID: payload.sub
+      });
+      conv.data.name = payload.FullName
+    } catch (error) {
+      throw console.error(`*  middleware  * error trying to save payload data ${error}`);
+    }
+    console.info(`*  middleware  * User Payload Saved ${JSON.stringify(conv.user.profile.payload, null, 2)}`);
+  }
 });
+// End of Middleware
 
-exports.serenefunctions = functions.https.onRequest(bot);
+// Sign In
+bot.intent("Start Sign-in", conv => {
+  console.info(`*  Start Sign-in  * Intent Fired`);
+  conv.ask(new SignIn("To use me"));
+});
+// End Sign In
+
+exports.dekofitfuns = functions.https.onRequest(bot);

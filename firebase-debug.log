@@ -1,0 +1,131 @@
+[debug] [2019-01-14T14:01:31.182Z] ----------------------------------------------------------------------
+[debug] [2019-01-14T14:01:31.184Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only functions
+[debug] [2019-01-14T14:01:31.184Z] CLI Version:   6.2.2
+[debug] [2019-01-14T14:01:31.184Z] Platform:      darwin
+[debug] [2019-01-14T14:01:31.184Z] Node Version:  v9.10.1
+[debug] [2019-01-14T14:01:31.185Z] Time:          Mon Jan 14 2019 14:01:31 GMT+0000 (GMT)
+[debug] [2019-01-14T14:01:31.185Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-01-14T14:01:31.194Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-01-14T14:01:31.194Z] > authorizing via signed-in user
+[debug] [2019-01-14T14:01:31.194Z] [iam] checking project serene-bot for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2019-01-14T14:01:31.196Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/serene-bot:testIamPermissions  
+
+[debug] [2019-01-14T14:01:32.010Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'serene-bot'...
+[info] 
+[info] i  deploying functions
+[debug] [2019-01-14T14:01:33.746Z] > [functions] package.json contents: {
+  "name": "deko-fit",
+  "description": "Deko Fit Bot",
+  "engines": {
+    "node": "8"
+  },
+  "scripts": {
+    "serve": "firebase serve --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "dependencies": {
+    "actions-on-google": "^2.5.0",
+    "firebase": "^5.5.5",
+    "firebase-admin": "^6.5.0",
+    "firebase-functions": "^2.1.0",
+    "moment": "^2.23.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.12.0",
+    "eslint-plugin-promise": "^3.7.0"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[debug] [2019-01-14T14:01:33.747Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/cloudfunctions.googleapis.com/projectSettings/serene-bot?view=CONSUMER_VIEW  
+ 
+[debug] [2019-01-14T14:01:33.748Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/runtimeconfig.googleapis.com/projectSettings/serene-bot?view=CONSUMER_VIEW  
+ 
+[debug] [2019-01-14T14:01:35.078Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:01:35.204Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: all necessary APIs are enabled
+[debug] [2019-01-14T14:01:35.205Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/serene-bot  
+ 
+[debug] [2019-01-14T14:01:36.047Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:01:36.048Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/1063110295002:getServerAppConfig  
+ 
+[debug] [2019-01-14T14:01:36.367Z] <<< HTTP RESPONSE 200
+[info] i  functions: preparing functions directory for uploading...
+[debug] [2019-01-14T14:01:36.374Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/serene-bot/configs  
+ 
+[debug] [2019-01-14T14:01:36.767Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:01:36.768Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/serene-bot/configs/fireconfig/variables  
+ 
+[debug] [2019-01-14T14:01:37.007Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:01:37.008Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/serene-bot/configs/fireconfig/variables/key  
+ 
+[debug] [2019-01-14T14:01:37.008Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/serene-bot/configs/fireconfig/variables/id  
+ 
+[debug] [2019-01-14T14:01:37.851Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:01:37.867Z] <<< HTTP RESPONSE 200
+[info] i  functions: packaged functions (60.75 KB) for uploading
+[debug] [2019-01-14T14:01:38.456Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/serene-bot/locations/us-central1/functions:generateUploadUrl  
+ 
+[debug] [2019-01-14T14:01:40.592Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:01:40.593Z] >>> HTTP REQUEST PUT https://storage.googleapis.com/gcf-upload-us-central1-44ecc08d-c8e0-43ce-b25f-2dc004bc982f/d6d26da2-1c1e-4d88-9dc7-def156bf769f.zip?GoogleAccessId=service-1063110295002@gcf-admin-robot.iam.gserviceaccount.com&Expires=1547476300&Signature=e7m1zA7sFNL9Wby%2BAijYWvCuFpwQ0M1O7vGBa1S9M9ryQIJHUNHBULSrOKEe3hEIlQ1eRbto5aDUUMyPwOq3evwcFQ7RwuBNEbmGZ%2FKN3xLhA0v8PvRGzxEq2SzRdjea5a774wDQrffMGeHDO5exQVN7K1uNgjSKFV4ecXBYPZasRqZ0p91ZK1aaijGQ%2FiSdUNb0kWKOH2Wycvsg6AT%2FCL4ZkfJ4yMKNkYLD%2FxtjJDTYIyPVnCyLVXpk0KBF2Ubw6vUJinTsew%2FG954vQwPRRRtreI4aSwIbf4ztdO8p32QaLP8MEskrjEh3sGM5Ul0sc6ehpXd83aKjgnvBOM3WKA%3D%3D  
+
+[debug] [2019-01-14T14:01:41.251Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: functions folder uploaded successfully
+[debug] [2019-01-14T14:01:41.254Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/serene-bot/locations/-/functions  
+ 
+[debug] [2019-01-14T14:01:41.718Z] <<< HTTP RESPONSE 200
+[info] i  functions: creating Node.js 8 function dekofitfuns(us-central1)...
+[debug] [2019-01-14T14:01:41.721Z] Trigger is:  {"httpsTrigger":{}}
+[info] 
+The following functions are found in your project but do not exist in your local source code:
+	serenefunctions(us-central1)
+
+If you are renaming a function or changing its region, it is recommended that you create the new function first before deleting the old one to prevent event loss. For more info, visit https://firebase.google.com/docs/functions/manage-functions#modify
+
+[info] i  functions: deleting function serenefunctions(us-central1)...
+[debug] [2019-01-14T14:01:55.093Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/serene-bot/locations/us-central1/functions  
+
+[debug] [2019-01-14T14:01:55.094Z] >>> HTTP REQUEST DELETE https://cloudfunctions.googleapis.com/v1/projects/serene-bot/locations/us-central1/functions/serenefunctions  
+ 
+[debug] [2019-01-14T14:01:55.519Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:01:55.528Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:01:55.529Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/serene-bot/locations/-/functions  
+ 
+[debug] [2019-01-14T14:01:57.178Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:01:57.180Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/c2VyZW5lLWJvdC91cy1jZW50cmFsMS9kZWtvZml0ZnVucy91QzJNRkNwRDZ0cw  
+ 
+[debug] [2019-01-14T14:01:57.180Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/c2VyZW5lLWJvdC91cy1jZW50cmFsMS9zZXJlbmVmdW5jdGlvbnMvbld3WEpBajBjalE  
+ 
+[debug] [2019-01-14T14:01:57.418Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:01:57.447Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:01:59.421Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/c2VyZW5lLWJvdC91cy1jZW50cmFsMS9kZWtvZml0ZnVucy91QzJNRkNwRDZ0cw  
+ 
+[debug] [2019-01-14T14:01:59.450Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/c2VyZW5lLWJvdC91cy1jZW50cmFsMS9zZXJlbmVmdW5jdGlvbnMvbld3WEpBajBjalE  
+ 
+[debug] [2019-01-14T14:01:59.860Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:01:59.982Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:02:01.862Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/c2VyZW5lLWJvdC91cy1jZW50cmFsMS9zZXJlbmVmdW5jdGlvbnMvbld3WEpBajBjalE  
+ 
+[debug] [2019-01-14T14:02:01.986Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/c2VyZW5lLWJvdC91cy1jZW50cmFsMS9kZWtvZml0ZnVucy91QzJNRkNwRDZ0cw  
+ 
+[debug] [2019-01-14T14:02:02.138Z] <<< HTTP RESPONSE 200
+[info] ✔  functions[serenefunctions(us-central1)]: Successful delete operation. 
+[debug] [2019-01-14T14:02:02.243Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:02:04.245Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/c2VyZW5lLWJvdC91cy1jZW50cmFsMS9kZWtvZml0ZnVucy91QzJNRkNwRDZ0cw  
+ 
+[debug] [2019-01-14T14:02:04.515Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:02:06.518Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/c2VyZW5lLWJvdC91cy1jZW50cmFsMS9kZWtvZml0ZnVucy91QzJNRkNwRDZ0cw  
+ 
+[debug] [2019-01-14T14:02:06.788Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:02:08.793Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/c2VyZW5lLWJvdC91cy1jZW50cmFsMS9kZWtvZml0ZnVucy91QzJNRkNwRDZ0cw  
+ 
+[debug] [2019-01-14T14:02:09.038Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-14T14:02:11.044Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/c2VyZW5lLWJvdC91cy1jZW50cmFsMS9kZWtvZml0ZnVucy91QzJNRkNwRDZ0cw  
+ 
+[debug] [2019-01-14T14:02:11.348Z] <<< HTTP RESPONSE 200
