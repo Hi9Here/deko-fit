@@ -2,20 +2,18 @@
 
 const {
   dialogflow,
-  BrowseCarousel,
-  BrowseCarouselItem,
-  Button,
-  Carousel,
   Image,
-  List,
   BasicCard,
   MediaObject,
   Suggestions,
   SimpleResponse,
-  Permission
+  List,
+  Carousel,
+  SignIn
 } = require('actions-on-google');
 const functions = require('firebase-functions');
 const admin = require("firebase-admin");
+const cors = require("cors")
 
 // Dialogflow
 const serviceAccount = require("./config/firebaseKey.json");
@@ -32,8 +30,11 @@ const bot = dialogflow({
   debug: true
 });
 
+let version = 0.9
+
 bot.intent('Default Welcome Intent', (conv) => {
-  conv.ask('V83')
+  conv.ask(`My name is Serene and I am here to help you get fitter and stronger. Ask me how to do an particular Exercise or change your Weight or Show Profile`)
+  conv.ask(new Suggestions([`Exercise`, `Show Profile`, `Weight`]));
 })
 
 // Start audio intent
@@ -64,9 +65,14 @@ bot.intent('audio', (conv, { exerciseTitle }) => {
               alt: exerciseTit
             })
           }));
-          conv.ask(new Suggestions([`Show`, `Favorite`, `Finish`]));
+          conv.ask(new SimpleResponse({
+            speech: 'Do you want another exercise or update weight?',
+            text: 'Do you want another exercise, update weight or finish?',
+          }));
+          conv.ask(new Suggestions([`Another Exercise`, `Update Weight`, `Finish`]));
           return
         }
+        conv.ask(new Suggestions([`Another Exercise`, `Update Weight`, `Finish`]));
         return
       })
       .catch(err => {
@@ -104,10 +110,10 @@ bot.intent('show', (conv, { exerciseTitle }) => {
             })
           }));
           conv.ask(new SimpleResponse({
-            speech: 'Do you want to favorite this, hear the audio version or finish?',
-            text: 'Do you want to favorite this, hear the audio version or finish?',
+            speech: 'Do you want another exercise?',
+            text: 'Do you want another exercise or finish?',
           }));
-          conv.ask(new Suggestions([`Audio`, `Favorite`, `Finish`]));
+          conv.ask(new Suggestions([`Another Exercise`, `Update Weight`, `Finish`]));
           return
         }
         return
@@ -128,7 +134,7 @@ bot.intent('profile', (conv, { Userweight, Userheight }) => {
     return dbstore.collection('profile').doc('profileID').collection('details').doc('measurements').set({
         weight: Userweight,
         height: Userheight
-      })
+      }, { merge: true })
       .then(function() {
         console.log("Document successfully written!");
         return
@@ -138,7 +144,31 @@ bot.intent('profile', (conv, { Userweight, Userheight }) => {
         return
       });
   } else {
-    console.log(`something weird happened in show`);
+    console.log(`something weird happened in profile`);
+  }
+});
+// End profile measurements
+// Start profile measurements
+bot.intent('weight', (conv, { weight }) => {
+  if (!weight.exist) {
+    return dbstore.collection('profile').doc('profileID').collection('details').doc('measurements').set({
+        weight: weight,
+      }, { merge: true })
+      .then(function() {
+        console.log("Document successfully written!");
+        conv.ask(new SimpleResponse({
+          speech: 'Thank You. Do you want me to show profile or another exercise?',
+          text: 'Thank you. Do ysou want me to show profile or another exercise?',
+        }));
+        conv.ask(new Suggestions([`Show Profile`, `Exercise`]));
+        return
+      })
+      .catch(function(error) {
+        console.error("Error writing document: ", error);
+        return
+      });
+  } else {
+    console.log(`something weird happened in wieght`);
   }
 });
 // End profile measurements
@@ -164,17 +194,17 @@ bot.intent('showprofile', (conv) => {
         }));
         conv.ask(new BasicCard({
           text: `Height is ${heightVal} ${heightUnit} and Weight is ${weightVal} ${weightUnit}`,
-          title: `Terry Crews`,
+          title: `Wo King`,
           image: new Image({
-            url: `https://storage.googleapis.com/serene-bot.appspot.com/images/terry-crews.jpg`,
-            alt: `profile`
+            url: `https://lh5.googleusercontent.com/-7idzbwYDIoQ/AAAAAAAAAAI/AAAAAAAAAe0/P_Bc_UFQf9E/s96-c/photo.jpg`,
+            alt: `Wo King`
           })
         }));
         conv.ask(new SimpleResponse({
           speech: 'Here is your information. Would you like to change weight or height?',
           text: 'Here is your information. Would you like to change weight or height?',
         }));
-        conv.ask(new Suggestions([`Change Weight`, `Change Height`]));
+        conv.ask(new Suggestions([`Change Weight`, `Change Height`, `Show Exercise`]));
         return
       }
       return
